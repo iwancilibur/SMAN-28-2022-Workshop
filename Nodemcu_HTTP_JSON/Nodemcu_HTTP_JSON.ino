@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h> //2.7.4
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h> //6.17.3
+#include <DHT.h>
 
 char* ssid            = "RYE !!!!"; //isi dengan SSID WIFI
 char* pass            = "mafriz1234"; //isi dengan PASSWORD WIFI
@@ -9,9 +10,15 @@ String HOST_NAME      = "192.168.10.106"; // change to your PC's IP address
 String PATH_NAME      = "/sman28/data-api.php";
 String getData;
 
+#define DHTPIN D2 
+#define DHTTYPE DHT11 
+
+DHT dht(DHTPIN, DHTTYPE);
+
 void setup()
 {
-  Serial.begin(115200);
+ Serial.begin(115200);
+ dht.begin();
  WiFi.begin(ssid, pass);
  while (WiFi.status() != WL_CONNECTED) {
     Serial.println("Connecting..");
@@ -32,8 +39,13 @@ void loop()
 {
   //Baca data
   String namadevice="iwancilibur";
-  float sensor1=random(27,50);
-  float sensor2=random(27,50);
+
+  float sensor1 = dht.readTemperature();
+  float sensor2 = dht.readHumidity();
+
+  //Baca data Dummy
+  //  float sensor1=random(27,50);
+  //  float sensor2=random(27,50);
   
     // make a HTTP request:
     // send HTTP header
